@@ -94,6 +94,7 @@ dice_5 = pygame.image.load('data/sprites/5.png')
 dice_6 = pygame.image.load('data/sprites/6.png')
 
 while running:
+    sidebar.fill((0, 0, 0))
     # Event handling
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -145,8 +146,8 @@ while running:
         screen.blit(player_2_sprite, (0 + sprite_offset * 1, 0))
         screen.blit(player_3_sprite, (0 + sprite_offset * 2, 0))
         screen.blit(player_4_sprite, (0 + sprite_offset * 3, 0))
-        screen.blit(sidebar, (SCREEN_WIDTH - SIDEBAR_WIDTH, 0))
         player_stats = sidebar_title_font.render("Joueurs", True, (255, 255, 255))
+        screen.blit(sidebar, (SCREEN_WIDTH - SIDEBAR_WIDTH, 0))
         sidebar.blit(player_stats, (20, 10))
         sidebar.blit(dice_1, (20, SCREEN_HEIGHT - 100))
 
