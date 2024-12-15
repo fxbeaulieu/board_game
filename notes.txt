@@ -1,41 +1,31 @@
-Creating a board game using Pygame involves several steps. Below, you'll find a general guide on how to get started:
+You need to clear the `sidebar` surface at the beginning of each frame, otherwise the old contents will still be visible. You can do this by filling it with a color, for example, black or white.
 
-1. Install Pygame: You can install Pygame using pip by entering the following command in your terminal:
-```
-pip install pygame
-```
-2. Initialize Pygame: Before you can do anything in Pygame, you need to initialize it.
+Add this line at the start of your main loop:
+
 ```python
-import pygame
-pygame.init()
+sidebar.fill((0, 0, 0))  # Fills the sidebar with black color
 ```
-3. Set Up the Display: The next step is to set up the display. You can create a window for your game using `pygame.display.set_mode()`. This function takes a tuple that represents the width and height of the window.
+
+Also, currently you're blitting your sidebar and then drawing on it. You should draw on your sidebar first, then blit it onto the main screen. So, this:
+
 ```python
-screen = pygame.display.set_mode((800, 600))  # width, height
+screen.blit(sidebar, (SCREEN_WIDTH - SIDEBAR_WIDTH, 0))
+player_stats = sidebar_title_font.render("Joueurs", True, (255, 255, 255))
+sidebar.blit(player_stats, (20, 10))
+sidebar.blit(dice_1, (20, SCREEN_HEIGHT - 100))
 ```
-4. Create a Game Loop: Your game will require a loop that runs continuously until the player exits the game.
+
+Should become:
+
 ```python
-running = True
-while running:
-    # Event handling
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-    # Game logic goes here
-
-    # Render/draw your game state
-    pygame.display.flip()
-
-pygame.quit()
+player_stats = sidebar_title_font.render("Joueurs", True, (255, 255, 255))
+sidebar.blit(player_stats, (20, 10))
+sidebar.blit(dice_1, (20, SCREEN_HEIGHT - 100))
+screen.blit(sidebar, (SCREEN_WIDTH - SIDEBAR_WIDTH, 0))
 ```
-5. Draw the Board: You can draw shapes onto your window using Pygame's drawing functions. For example, you might use `pygame.draw.rect()` to draw each square on your game board.
 
-6. Handle User Input: You'll need to handle user input, such as mouse clicks or key presses. This can be done within your game loop using Pygame's event system.
+And finally, when you're drawing the dice onto the sidebar, you're using `SCREEN_HEIGHT` to calculate the y-coordinate. But `SCREEN_HEIGHT` is the height of the main screen, not the sidebar. If you want to position the dice near the bottom of the sidebar, you should use `SIDEBAR_WIDTH` instead:
 
-7. Implement Game Logic: Depending on what game you're making, your game logic could involve checking for win conditions, updating the game state, etc.
-
-8. Render Game State: Finally, after updating your game state, you'll want to render it onto the screen. This could involve redrawing the entire screen, or just updating parts of it.
-
-Remember to fill in the game logic and rendering details according to your specific board game rules and design. This is just a basic structure to get you started.
-
-Also consider organizing your game into classes (e.g., `Board`, `Player`, `Game`) as your game increases in complexity.
+```python
+sidebar.blit(dice_1, (20, SIDEBAR_WIDTH - 100))
+```

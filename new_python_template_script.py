@@ -1,19 +1,23 @@
 import pygame
 
-SCREEN_WIDTH = 700
+SIDEBAR_WIDTH = 300
+SCREEN_WIDTH = 700 + SIDEBAR_WIDTH
 SCREEN_HEIGHT = 700
-SCREEN_TITLE = "Voyage au centre de la galaxie"
 SQUARES_NUMBERS_PADDING = 5
+SCREEN_TITLE = "Voyage au centre de la galaxie"
 
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
+sidebar = pygame.Surface((SIDEBAR_WIDTH, SCREEN_HEIGHT))
 font = pygame.font.Font('data/fonts/MesloLGLNerdFont-Bold.ttf', 24)
+sidebar_title_font = pygame.font.Font('data/fonts/MesloLGLNerdFont-Bold.ttf',20)
+text_font = pygame.font.Font('data/fonts/MesloLGLNerdFont-Bold.ttf',16)
 
 # Load images and create display surfaces here
 backgrounds = {
-    1: pygame.transform.scale(pygame.image.load('data/backgrounds/world1.PNG'),(SCREEN_WIDTH,SCREEN_HEIGHT)),
-    2: pygame.transform.scale(pygame.image.load('data/backgrounds/world2.PNG'),(SCREEN_WIDTH,SCREEN_HEIGHT)),
-    3: pygame.transform.scale(pygame.image.load('data/backgrounds/world3.PNG'),(SCREEN_WIDTH,SCREEN_HEIGHT))
+    1: pygame.transform.scale(pygame.image.load('data/backgrounds/world1.PNG'),(SCREEN_WIDTH - SIDEBAR_WIDTH,SCREEN_HEIGHT)),
+    2: pygame.transform.scale(pygame.image.load('data/backgrounds/world2.PNG'),(SCREEN_WIDTH - SIDEBAR_WIDTH,SCREEN_HEIGHT)),
+    3: pygame.transform.scale(pygame.image.load('data/backgrounds/world3.PNG'),(SCREEN_WIDTH - SIDEBAR_WIDTH,SCREEN_HEIGHT))
 }
 rows = {
     1: 6,
@@ -82,6 +86,12 @@ player_1_sprite = pygame.transform.scale(player_1_sprite, (square_sizes[world_ac
 player_2_sprite = pygame.transform.scale(player_2_sprite, (square_sizes[world_active]/2, square_sizes[world_active]/2))
 player_3_sprite = pygame.transform.scale(player_3_sprite, (square_sizes[world_active]/2, square_sizes[world_active]/2))
 player_4_sprite = pygame.transform.scale(player_4_sprite, (square_sizes[world_active]/2, square_sizes[world_active]/2))
+dice_1 = pygame.image.load('data/sprites/1.png')
+dice_2 = pygame.image.load('data/sprites/2.png')
+dice_3 = pygame.image.load('data/sprites/3.png')
+dice_4 = pygame.image.load('data/sprites/4.png')
+dice_5 = pygame.image.load('data/sprites/5.png')
+dice_6 = pygame.image.load('data/sprites/6.png')
 
 while running:
     # Event handling
@@ -98,12 +108,12 @@ while running:
         pygame.draw.line(screen, pygame.Color('white'), (0, y), (SCREEN_WIDTH, y), 3)
 
     for j in range(columns[world_active]):
-        x = j * SCREEN_WIDTH // columns[world_active]
-        pygame.draw.line(screen, pygame.Color('white'), (x, 0), (x, SCREEN_HEIGHT), 3)   
-
+        x = j * (SCREEN_WIDTH - SIDEBAR_WIDTH) // columns[world_active]
+        pygame.draw.line(screen, pygame.Color('white'), (x, 0), (x, SCREEN_HEIGHT), 3)
+    
     for i in range(rows[world_active]):
         for j in range(columns[world_active]):
-            x = j * SCREEN_WIDTH // columns[world_active]
+            x = j * (SCREEN_WIDTH - SIDEBAR_WIDTH) // columns[world_active]
             y = i * SCREEN_HEIGHT // rows[world_active]
             numeral_value = i * columns[world_active] + j + 1
             color = square_colors[world_active].get(numeral_value, (255, 255, 255))  # Use white as default color
@@ -135,7 +145,11 @@ while running:
         screen.blit(player_2_sprite, (0 + sprite_offset * 1, 0))
         screen.blit(player_3_sprite, (0 + sprite_offset * 2, 0))
         screen.blit(player_4_sprite, (0 + sprite_offset * 3, 0))
-        
+        screen.blit(sidebar, (SCREEN_WIDTH - SIDEBAR_WIDTH, 0))
+        player_stats = sidebar_title_font.render("Joueurs", True, (255, 255, 255))
+        sidebar.blit(player_stats, (20, 10))
+        sidebar.blit(dice_1, (20, SCREEN_HEIGHT - 100))
+
     pygame.display.update()
     
 pygame.quit()
